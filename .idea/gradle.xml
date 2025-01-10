@@ -9,6 +9,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/algorithm-datastructure" />
             <option value="$PROJECT_DIR$/reactive-streams" />
           </set>
         </option>
