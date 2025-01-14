@@ -6,75 +6,75 @@ public class Main {
 
 	public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	public static StringTokenizer st;
-	public static int[][] arr;
 	public static int n;
-	public static int m;
-	public static int result = 0;
+	public static int[][] blocks;
+	public static int r;
+	public static int c;
+	public static final int EMPTY = 0;
 
-	// 행복한 수열은 연속하여 m개 이상의 동일한 원소가 나오는 순간이 존재하는 수열이다.
-	// 행마다 나오는 n개의 수열과 열마다 나오는 n개의 수열 총 2n 개의 수열이 존재한다.
-	// 행복한 수열의 개수를 세시오.
 	public static void main(String[] args) throws Exception {
 		input();
-
-		for(int i = 1; i <= n; i++) {
-			if(countRow(i) >= m ) {
-				result++;
-			}
-
-			if(countCol(i) >= m ) {
-				result++;
-			}
-		}
-		
-		System.out.println(result);
+		bomb();
+		shift();
+		printArr();
 	}
 
-	// row번째 행에서 가장긴 연속으로 나오는 숫자의 개수를 센다.
-	public static int countRow(int row) {
-		int max = 1;
-		int cur = 1;
+	public static void shift() {
+		int[][] temp = new int[n+1][n+1];
 
-		for(int i = 2; i <= n; i++) {
-			if(arr[row][i] == arr[row][i-1]) {
-				cur++;
-			} else {
-				max = Math.max(max, cur);
-				cur = 1;
+		for(int col = 1; col <= n; col++) {
+			int tempRow = n;
+
+			for(int row = n; row >= 1; row--) {
+				if(blocks[row][col] != EMPTY) {
+					temp[tempRow--][col] = blocks[row][col];
+				}
 			}
 		}
-
-		return Math.max(max, cur);
+		blocks = temp;
 	}
 
-	public static int countCol(int col) {
-		int max = 1;
-		int cur = 1;
+	public static void bomb() {
+		int distance = blocks[r][c] - 1;
+		blocks[r][c] = EMPTY;
 
-		for(int i = 2; i <= n; i++) {
-			if(arr[i][col] == arr[i-1][col]) {
-				cur++;
-			} else {
-				max = Math.max(max, cur);
-				cur = 1;
-			}
+		int startRow = Math.max(r - distance, 1);
+		int endRow = Math.min(r + distance, n);
+		// 상하 방향으로 폭발
+		for(int i = startRow; i <= endRow; i++) {
+			blocks[i][c] = EMPTY;
 		}
-
-		return Math.max(max, cur);
+		// 좌우 방향으로 폭발
+		int startCol = Math.max(c - distance, 1);
+		int endCol = Math.min(c + distance, n);
+		for(int i = startCol; i <= endCol; i++) {
+			blocks[r][i] = EMPTY;
+		}
 	}
 
 	public static void input() throws Exception {
-		st = new StringTokenizer(br.readLine());
-		n = Integer.parseInt(st.nextToken());
-		m = Integer.parseInt(st.nextToken());
-		arr = new int[n+1][n+1];
+		n = Integer.parseInt(br.readLine());
+		blocks = new int[n+1][n+1];
 
 		for(int i = 1; i <= n; i++) {
 			st = new StringTokenizer(br.readLine());
-
 			for(int j = 1; j <= n; j++) {
-				arr[i][j] = Integer.parseInt(st.nextToken());
+				blocks[i][j] = Integer.parseInt(st.nextToken());
 			}
+		}
+
+		st = new StringTokenizer(br.readLine());
+		r = Integer.parseInt(st.nextToken());
+		c = Integer.parseInt(st.nextToken());
+	}
+
+	public static void printArr() {
+		for(int i = 1; i <= n; i++) {
+			for(int j = 1; j <= n; j++) {
+				System.out.print(blocks[i][j] + " ");
+			}
+			System.out.println();
 		}
 	}
 }
+
